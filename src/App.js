@@ -1,26 +1,73 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import ToDoList from "./components/ToDoList.js";
+import ListForm from "./components/ListForm";
+import "./App.css";
+
+const tasks = [
+  {
+    task: "example task",
+    id: 123,
+    done: false,
+  },
+];
+
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      tasks,
+    };
+  }
+
+  addTask = (e, item) => {
+    e.preventDefault();
+    const newTask = {
+      task: item,
+      id: Date.now(),
+      done: false,
+    };
+    this.setState({
+      tasks: [...this.state.tasks, newTask],
+    });
+  };
+
+  crossTask = (taskId) => {
+    console.log(taskId);
+    this.setState({
+      tasks: this.state.tasks.map((task) => {
+        if (taskId === task.id) {
+          return {
+            ...task,
+            done: !task.done,
+          };
+        }
+        return task;
+      }),
+    });
+  };
+
+  clearDone = (e) => {
+    e.preventDefault();
+    this.setState({
+      tasks: this.state.tasks.filter((item) => !item.done),
+    });
+  };
+
+  render() {
+    console.log("rendering...");
+    return (
+      <div className="App">
+        <h1>ToDo List</h1>
+        <ListForm addTask={this.addTask} />
+        <ToDoList
+          tasks={this.state.tasks}
+          crossTask={this.crossTask}
+          clearDone={this.clearDone}
+        />
+      </div>
+    );
+  }
 }
 
 export default App;
